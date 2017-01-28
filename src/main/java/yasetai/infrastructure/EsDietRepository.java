@@ -27,16 +27,21 @@ public class EsDietRepository implements DietRepository {
   public Diet create(Diet diet) {
     ObjectMapper mapper = new ObjectMapper();
 
+    // TODO この際シングルトンにしちゃってもいい?
     try (RestClient client = RestClient.builder(new HttpHost("localhost", 9200)).build()) {
       diet.setTimestamp(ZonedDateTime.now(ZoneOffset.UTC).toString());
 
       HttpEntity entity = new NStringEntity(mapper.writeValueAsString(diet), ContentType.APPLICATION_JSON);
 
       Response response = client.performRequest("POST", "/diet/log", Collections.emptyMap(), entity);
+
+      // TODO ES のレスポンスをモデルに変換する
+      return null;
+
     } catch (IOException e) {
-      e.printStackTrace();
+      throw new RuntimeException(e);
     }
-    return null;
+
   }
 
 }
