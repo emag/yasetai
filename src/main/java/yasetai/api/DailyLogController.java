@@ -1,7 +1,7 @@
 package yasetai.api;
 
-import yasetai.domain.model.Diet;
-import yasetai.domain.model.DietRepository;
+import yasetai.domain.model.DailyLog;
+import yasetai.domain.model.DailyLogRepository;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -15,27 +15,27 @@ import javax.ws.rs.core.Response;
 
 @ApplicationScoped
 @Path("/")
-public class DietController {
+public class DailyLogController {
 
-  private DietRepository repository;
+  private DailyLogRepository repository;
 
   @Inject
-  public DietController(DietRepository repository) {
+  public DailyLogController(DailyLogRepository repository) {
     this.repository = repository;
   }
 
-  public DietController() {}
+  public DailyLogController() {}
 
   @GET
   @Produces(MediaType.APPLICATION_JSON)
-  public Diet get(Integer id) {
+  public DailyLog get(Integer id) {
     return repository.find(id);
   }
 
   @POST
   @Consumes(MediaType.APPLICATION_JSON)
-  public Response post(Diet diet) {
-    repository.create(diet);
+  public Response post(DailyLog dailyLog) {
+    repository.create(dailyLog);
     return null;
   }
 

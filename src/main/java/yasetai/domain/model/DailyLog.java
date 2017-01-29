@@ -5,7 +5,7 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class Diet {
+public class DailyLog {
 
   private String timestamp;
   private float weight;

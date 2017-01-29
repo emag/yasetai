@@ -7,8 +7,8 @@ import org.apache.http.entity.ContentType;
 import org.apache.http.nio.entity.NStringEntity;
 import org.elasticsearch.client.Response;
 import org.elasticsearch.client.RestClient;
-import yasetai.domain.model.Diet;
-import yasetai.domain.model.DietRepository;
+import yasetai.domain.model.DailyLog;
+import yasetai.domain.model.DailyLogRepository;
 
 import javax.enterprise.context.ApplicationScoped;
 import java.io.IOException;
@@ -17,23 +17,23 @@ import java.time.ZonedDateTime;
 import java.util.Collections;
 
 @ApplicationScoped
-public class EsDietRepository implements DietRepository {
+public class EsDailyLogRepository implements DailyLogRepository {
 
-  public Diet find(Integer id) {
-    return new Diet();
+  public DailyLog find(Integer id) {
+    return new DailyLog();
   }
 
   @Override
-  public Diet create(Diet diet) {
+  public DailyLog create(DailyLog dailyLog) {
     ObjectMapper mapper = new ObjectMapper();
 
     // TODO この際シングルトンにしちゃってもいい?
     try (RestClient client = RestClient.builder(new HttpHost("localhost", 9200)).build()) {
-      diet.setTimestamp(ZonedDateTime.now(ZoneOffset.UTC).toString());
+      dailyLog.setTimestamp(ZonedDateTime.now(ZoneOffset.UTC).toString());
 
-      HttpEntity entity = new NStringEntity(mapper.writeValueAsString(diet), ContentType.APPLICATION_JSON);
+      HttpEntity entity = new NStringEntity(mapper.writeValueAsString(dailyLog), ContentType.APPLICATION_JSON);
 
-      Response response = client.performRequest("POST", "/diet/log", Collections.emptyMap(), entity);
+      Response response = client.performRequest("POST", "/dailyLog/log", Collections.emptyMap(), entity);
 
       // TODO ES のレスポンスをモデルに変換する
       return null;
