@@ -1,20 +1,15 @@
 package yasetai.infrastructure;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpHost;
-import org.apache.http.entity.ContentType;
-import org.apache.http.nio.entity.NStringEntity;
-import org.elasticsearch.client.Response;
-import org.elasticsearch.client.RestClient;
 import yasetai.domain.model.DailyLog;
 import yasetai.domain.model.DailyLogRepository;
+import yasetai.infrastructure.client.EsClient;
+import yasetai.infrastructure.client.EsHost;
+import yasetai.infrastructure.client.response.PostResponse;
 
 import javax.enterprise.context.ApplicationScoped;
 import java.io.IOException;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
-import java.util.Collections;
 
 @ApplicationScoped
 public class EsDailyLogRepository implements DailyLogRepository {
@@ -25,18 +20,15 @@ public class EsDailyLogRepository implements DailyLogRepository {
 
   @Override
   public DailyLog create(DailyLog dailyLog) {
-    ObjectMapper mapper = new ObjectMapper();
+    dailyLog.setTimestamp(ZonedDateTime.now(ZoneOffset.UTC).toString());
 
-    // TODO この際シングルトンにしちゃってもいい?
-    try (RestClient client = RestClient.builder(new HttpHost("localhost", 9200)).build()) {
-      dailyLog.setTimestamp(ZonedDateTime.now(ZoneOffset.UTC).toString());
+    // TODO この際 EsClient はシングルトンにしちゃってもいい?
+    try (EsClient client = EsClient.create(new EsHost("localhost", 9200))) {
 
-      HttpEntity entity = new NStringEntity(mapper.writeValueAsString(dailyLog), ContentType.APPLICATION_JSON);
+      PostResponse response = client.post(dailyLog);
 
-      Response response = client.performRequest("POST", "/dailyLog/log", Collections.emptyMap(), entity);
-
-      // TODO ES のレスポンスをモデルに変換する
-      return null;
+      dailyLog.setId(response.getId());
+      return dailyLog;
 
     } catch (IOException e) {
       throw new RuntimeException(e);

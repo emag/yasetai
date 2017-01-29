@@ -19,6 +19,9 @@
 
     <version.lombok>1.16.12</version.lombok>
 
+    <version.junit>4.12</version.junit>
+    <version.assertj>3.6.2</version.assertj>
+
     <failOnMissingWebXml>false</failOnMissingWebXml>
   </properties>
 
@@ -54,6 +57,19 @@
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
       <version>${version.lombok}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>${version.junit}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <version>${version.assertj}</version>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 

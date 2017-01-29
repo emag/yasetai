@@ -10,11 +10,13 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 
 @ApplicationScoped
-@Path("/")
+@Path("/daily-log")
 public class DailyLogController {
 
   private DailyLogRepository repository;
@@ -34,9 +36,15 @@ public class DailyLogController {
 
   @POST
   @Consumes(MediaType.APPLICATION_JSON)
-  public Response post(DailyLog dailyLog) {
-    repository.create(dailyLog);
-    return null;
+  public Response post(@Context UriInfo uriInfo, DailyLog dailyLog) {
+    DailyLog created = repository.create(dailyLog);
+
+    return Response
+      .created(
+        uriInfo.getAbsolutePathBuilder()
+          .path(String.valueOf(created.getId()))
+          .build()
+      ).build();
   }
 
 }
