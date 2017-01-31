@@ -1,4 +1,4 @@
-package yasetai.domain.model;
+package yasetai.domain.model.dailylog;
 
 public interface DailyLogRepository {
 

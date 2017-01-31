@@ -1,7 +1,7 @@
-package yasetai.infrastructure;
+package yasetai.infrastructure.dailylog;
 
-import yasetai.domain.model.DailyLog;
-import yasetai.domain.model.DailyLogRepository;
+import yasetai.domain.model.dailylog.DailyLog;
+import yasetai.domain.model.dailylog.DailyLogRepository;
 import yasetai.infrastructure.client.EsClient;
 import yasetai.infrastructure.client.EsHost;
 

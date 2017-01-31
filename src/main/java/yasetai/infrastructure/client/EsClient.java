@@ -8,7 +8,7 @@ import org.apache.http.entity.ContentType;
 import org.apache.http.nio.entity.NStringEntity;
 import org.elasticsearch.client.Response;
 import org.elasticsearch.client.RestClient;
-import yasetai.domain.model.DailyLog;
+import yasetai.domain.model.dailylog.DailyLog;
 
 import java.io.Closeable;
 import java.io.IOException;

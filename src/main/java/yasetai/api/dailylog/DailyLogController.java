@@ -1,7 +1,7 @@
-package yasetai.api;
+package yasetai.api.dailylog;
 
-import yasetai.domain.model.DailyLog;
-import yasetai.domain.model.DailyLogRepository;
+import yasetai.domain.model.dailylog.DailyLog;
+import yasetai.domain.model.dailylog.DailyLogRepository;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;

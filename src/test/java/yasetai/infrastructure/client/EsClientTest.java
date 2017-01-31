@@ -1,7 +1,7 @@
 package yasetai.infrastructure.client;
 
 import org.junit.Test;
-import yasetai.domain.model.DailyLog;
+import yasetai.domain.model.dailylog.DailyLog;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
