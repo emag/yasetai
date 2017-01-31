@@ -8,11 +8,12 @@ import org.apache.http.entity.ContentType;
 import org.apache.http.nio.entity.NStringEntity;
 import org.elasticsearch.client.Response;
 import org.elasticsearch.client.RestClient;
-import yasetai.infrastructure.client.response.PostResponse;
+import yasetai.domain.model.DailyLog;
 
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.Collections;
+import java.util.Map;
 
 public class EsClient implements Closeable {
 
@@ -35,10 +36,27 @@ public class EsClient implements Closeable {
     return new EsClient(esHosts);
   }
 
-  public PostResponse post(Object object) throws IOException {
-    HttpEntity entity = new NStringEntity(mapper.writeValueAsString(object), ContentType.APPLICATION_JSON);
+  public DailyLog get(String id) throws IOException {
+    Response response = client.performRequest("GET", "/yasetai/daily-log/" + id + "/_source");
+    DailyLog target = mapper.readValue(response.getEntity().getContent(), DailyLog.class);
+    target.setId(id);
+    return target;
+  }
+
+  public DailyLog post(DailyLog dailyLog) throws IOException {
+    HttpEntity entity = new NStringEntity(mapper.writeValueAsString(dailyLog), ContentType.APPLICATION_JSON);
     Response rawResponse = client.performRequest("POST", "/yasetai/daily-log", Collections.emptyMap(), entity);
-    return mapper.readValue(rawResponse.getEntity().getContent(), PostResponse.class);
+    Map<String, Object> responseMap = mapper.readValue(rawResponse.getEntity().getContent(), Map.class);
+
+    DailyLog registered = new DailyLog();
+    registered.setId(responseMap.get("_id").toString());
+    registered.setTimestamp(dailyLog.getTimestamp());
+    registered.setWeight(dailyLog.getWeight());
+    registered.setFat(dailyLog.getFat());
+    registered.setCalorie(dailyLog.getCalorie());
+    registered.setFoods(dailyLog.getFoods());
+
+    return registered;
   }
 
   @Override

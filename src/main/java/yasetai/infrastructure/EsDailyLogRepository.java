@@ -4,7 +4,6 @@ import yasetai.domain.model.DailyLog;
 import yasetai.domain.model.DailyLogRepository;
 import yasetai.infrastructure.client.EsClient;
 import yasetai.infrastructure.client.EsHost;
-import yasetai.infrastructure.client.response.PostResponse;
 
 import javax.enterprise.context.ApplicationScoped;
 import java.io.IOException;
@@ -14,8 +13,15 @@ import java.time.ZonedDateTime;
 @ApplicationScoped
 public class EsDailyLogRepository implements DailyLogRepository {
 
-  public DailyLog find(Integer id) {
-    return new DailyLog();
+  public DailyLog find(String id) {
+    // TODO この際 EsClient はシングルトンにしちゃってもいい?
+    try (EsClient client = EsClient.create(new EsHost("localhost", 9200))) {
+
+      return client.get(id);
+
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   @Override
@@ -25,10 +31,7 @@ public class EsDailyLogRepository implements DailyLogRepository {
     // TODO この際 EsClient はシングルトンにしちゃってもいい?
     try (EsClient client = EsClient.create(new EsHost("localhost", 9200))) {
 
-      PostResponse response = client.post(dailyLog);
-
-      dailyLog.setId(response.getId());
-      return dailyLog;
+      return client.post(dailyLog);
 
     } catch (IOException e) {
       throw new RuntimeException(e);
