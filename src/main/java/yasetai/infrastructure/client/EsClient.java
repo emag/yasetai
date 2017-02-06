@@ -9,6 +9,7 @@ import org.apache.http.nio.entity.NStringEntity;
 import org.elasticsearch.client.Response;
 import org.elasticsearch.client.RestClient;
 import yasetai.domain.model.dailylog.DailyLog;
+import yasetai.domain.model.diet.DailyDiet;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -53,8 +54,26 @@ public class EsClient implements Closeable {
     registered.setTimestamp(dailyLog.getTimestamp());
     registered.setWeight(dailyLog.getWeight());
     registered.setFat(dailyLog.getFat());
-    registered.setCalorie(dailyLog.getCalorie());
-    registered.setFoods(dailyLog.getFoods());
+
+    return registered;
+  }
+
+  public DailyDiet getDailyDiet(String id) throws IOException {
+    Response response = client.performRequest("GET", "/yasetai/daily-diet/" + id + "/_source");
+    DailyDiet target = mapper.readValue(response.getEntity().getContent(), DailyDiet.class);
+    target.setId(id);
+    return target;
+  }
+
+  public DailyDiet post(DailyDiet dailyDiet) throws IOException {
+    HttpEntity entity = new NStringEntity(mapper.writeValueAsString(dailyDiet), ContentType.APPLICATION_JSON);
+    Response rawResponse = client.performRequest("POST", "/yasetai/daily-diet", Collections.emptyMap(), entity);
+    Map<String, Object> responseMap = mapper.readValue(rawResponse.getEntity().getContent(), Map.class);
+
+    DailyDiet registered = new DailyDiet();
+    registered.setId(responseMap.get("_id").toString());
+    registered.setTimestamp(dailyDiet.getTimestamp());
+    registered.setFoods(dailyDiet.getFoods());
 
     return registered;
   }
